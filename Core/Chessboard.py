@@ -98,6 +98,33 @@ class Chessboard(object):
         self.remove_chessman(chessman.col_num, chessman.row_num)
         self.add_chessman(chessman, col_num, row_num)
 
+    def get_chessman(self, col_num, row_num):
+        return self.__chessmans[col_num][row_num]
+
+    def get_top_first_chessman(self, col_num):
+        pass
+
+    def get_bottom_first_chessman(self, col_num):
+        pass
+
+    def get_left_first_chessman(self, row_num):
+        pass
+
+    def get_right_first_chessman(self, row_num):
+        pass
+
+    def get_top_second_chessman(self, col_num):
+        pass
+
+    def get_bottom_second_chessman(self, col_num):
+        pass
+
+    def get_left_second_chessman(self, row_num):
+        pass
+
+    def get_right_second_chessman(self, row_num):
+        pass
+
     def print_to_cl(self):
         screen = ""
         for i in range(9, -1, -1):
