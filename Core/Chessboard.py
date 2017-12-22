@@ -101,32 +101,72 @@ class Chessboard(object):
     def get_chessman(self, col_num, row_num):
         return self.__chessmans[col_num][row_num]
 
-    def get_top_first_chessman(self, col_num):
-        pass
+    def get_top_first_chessman(self, col_num, row_num):
+        for i in range(row_num + 1, 10, 1):
+            current = self.chessmans[col_num][i]
+            if current <> None:
+                return current
 
-    def get_bottom_first_chessman(self, col_num):
-        pass
+    def get_bottom_first_chessman(self, col_num, row_num):
+        for i in range(row_num - 1, -1, -1):
+            current = self.chessmans[col_num][i]
+            if current <> None:
+                return current
 
-    def get_left_first_chessman(self, row_num):
-        pass
+    def get_left_first_chessman(self, col_num, row_num):
+        for i in range(col_num - 1, -1, -1):
+            current = self.chessmans[i][row_num]
+            if current <> None:
+                return current
 
-    def get_right_first_chessman(self, row_num):
-        pass
+    def get_right_first_chessman(self, col_num, row_num):
+        for i in range(col_num + 1, 9, 1):
+            current = self.chessmans[i][row_num]
+            if current <> None:
+                return current
 
-    def get_top_second_chessman(self, col_num):
-        pass
+    def get_top_second_chessman(self, col_num, row_num):
+        count = 0
+        for i in range(row_num + 1, 10, 1):
+            current = self.chessmans[col_num][i]
+            if current <> None:
+                if count == 1:
+                    return current
+                else:
+                    count += 1
 
-    def get_bottom_second_chessman(self, col_num):
-        pass
+    def get_bottom_second_chessman(self, col_num, row_num):
+        count = 0
+        for i in range(row_num - 1, -1, -1):
+            current = self.chessmans[col_num][i]
+            if current <> None:
+                if count == 1:
+                    return current
+                else:
+                    count += 1
 
-    def get_left_second_chessman(self, row_num):
-        pass
+    def get_left_second_chessman(self, col_num, row_num):
+        count = 0
+        for i in range(col_num - 1, -1, -1):
+            current = self.chessmans[i][row_num]
+            if current <> None:
+                if count == 1:
+                    return current
+                else:
+                    count += 1
 
-    def get_right_second_chessman(self, row_num):
-        pass
+    def get_right_second_chessman(self, col_num, row_num):
+        count = 0
+        for i in range(col_num + 1, 9, 1):
+            current = self.chessmans[i][row_num]
+            if current <> None:
+                if count == 1:
+                    return current
+                else:
+                    count += 1
 
     def print_to_cl(self):
-        screen = ""
+        screen = "\r\n"
         for i in range(9, -1, -1):
             for j in range(9):
                 if self.__chessmans[j][i] <> None:

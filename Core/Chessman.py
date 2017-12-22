@@ -3,6 +3,10 @@
 from Point import Point
 
 
+def num_between(max, min, current):
+    return current >= min and current <= max
+
+
 class Chessman(object):
 
     def __init__(self, name, is_red, chessboard):
@@ -11,6 +15,10 @@ class Chessman(object):
         self.__chessboard = chessboard
         self.__position = Point(None, None)
         self.__moving_list = []
+        self.__top = 9
+        self.__bottom = 0
+        self.__left = 0
+        self.__right = 8
 
     @property
     def is_red(self):
@@ -21,12 +29,18 @@ class Chessman(object):
         return self.__name
 
     def add_to_board(self, col_num, row_num):
-        self.__position.x = col_num
-        self.__position.y = row_num
-        self.__chessboard.add_chessman(self, col_num, row_num)
+        if self.border_check(col_num, row_num):
+            self.__position.x = col_num
+            self.__position.y = row_num
+            self.__chessboard.add_chessman(self, col_num, row_num)
+        else:
+            print "the worng postion"
 
     def calc_moving_list(self):
         pass
+
+    def border_check(self, col_num, row_num):
+        return num_between(self.__top, self.__bottom, row_num) and num_between(self.__right, self.__left, col_num)
 
 
 class Rook(Chessman):
@@ -40,6 +54,7 @@ class Rook(Chessman):
 
     def calc_moving_list(self):
         pass
+
 
 class Knight(Chessman):
 
