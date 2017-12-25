@@ -53,7 +53,24 @@ class Rook(Chessman):
         self.__right = 8
 
     def calc_moving_list(self):
-        pass
+        left = self.__chessboard.get_left_first_chessman(
+            self.__position.x, self.__position.y)
+        right = self.__chessboard.get_right_first_chessman(
+            self.__position.x, self.__position.y)
+        top = self.__chessboard.get_top_first_chessman(
+            self.__position.x, self.__position.y)
+        bottom = self.__chessboard.get_bottom_first_chessman(
+            self.__position.x, self.__position.y)
+        if left <> None:
+            if left.is_red or (not self.is_red):
+                for i in range(left.__position.x, self.__position.x, 1):
+                    self.__moving_list.insert(Point(i, self.__position.y))
+            else:
+                for i in range(left.__position.x + 1, self.__position.x, 1):
+                    self.__moving_list.insert(Point(i, self.__position.y))
+        else:
+            for i in range(0, self.__position.x, 1):
+                self.__moving_list.insert(Point(i, self.__position.y))
 
 
 class Knight(Chessman):
