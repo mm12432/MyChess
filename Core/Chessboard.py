@@ -71,7 +71,7 @@ class Chessboard(object):
         red_pawn_1.add_to_board(0, 3)
         red_pawn_2 = Chessman.Pawn(" 兵2红 ", True, self)
         red_pawn_2.add_to_board(2, 3)
-        red_pawn_3 = Chessman.Pawn(" 兵2红 ", True, self)
+        red_pawn_3 = Chessman.Pawn(" 兵3红 ", True, self)
         red_pawn_3.add_to_board(4, 3)
         red_pawn_4 = Chessman.Pawn(" 兵4红 ", True, self)
         red_pawn_4.add_to_board(6, 3)
