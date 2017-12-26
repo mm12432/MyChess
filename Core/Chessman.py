@@ -3,8 +3,14 @@
 from Point import Point
 
 
-def num_between(max, min, current):
-    return current >= min and current <= max
+def num_between(max_num, min_num, current):
+    return current >= min_num and current <= max_num
+
+
+def creat_points(list_points, list_vs, list_hs):
+    for v in list_vs:
+        for h in list_hs:
+            list_points.append(Point(v, h))
 
 
 class Chessman(object):
@@ -21,12 +27,27 @@ class Chessman(object):
         self.__right = 8
 
     @property
+    def chessboard(self):
+        return self.__chessboard
+
+    @property
     def is_red(self):
         return self.__is_red
 
     @property
     def name(self):
         return self.__name
+
+    @property
+    def position(self):
+        return self.__position
+
+    @property
+    def moving_list(self):
+        return self.__moving_list
+
+    def clear_moving_list(self):
+        self.__moving_list = []
 
     def add_to_board(self, col_num, row_num):
         if self.border_check(col_num, row_num):
@@ -42,55 +63,148 @@ class Chessman(object):
     def border_check(self, col_num, row_num):
         return num_between(self.__top, self.__bottom, row_num) and num_between(self.__right, self.__left, col_num)
 
+    def calc_moving_path(self, direction_chessman, direction_vertical_coordinate, current_vertical_coordinate, direction_parallel_coordinate, direction, border_vertical_coordinate, h_or_v, ignore_color=False):
+        if direction_chessman <> None:
+            if direction_chessman.is_red == self.is_red or ignore_color:
+                for i in range(direction_vertical_coordinate + direction, current_vertical_coordinate, direction):
+                    self.__moving_list.append(
+                        Point(i, direction_parallel_coordinate) if h_or_v else Point(direction_parallel_coordinate, i))
+
+            else:
+                for i in range(direction_vertical_coordinate, current_vertical_coordinate, direction):
+                    self.__moving_list.append(
+                        Point(i, direction_parallel_coordinate) if h_or_v else Point(direction_parallel_coordinate, i))
+        else:
+            for i in range(border_vertical_coordinate, current_vertical_coordinate, direction):
+                self.__moving_list.append(
+                    Point(i, direction_parallel_coordinate) if h_or_v else Point(direction_parallel_coordinate, i))
+
 
 class Rook(Chessman):
 
     def __init__(self, name, is_red, chessboard):
         super(Rook, self).__init__(name, is_red, chessboard)
-        self.__top = 9
-        self.__bottom = 0
-        self.__left = 0
-        self.__right = 8
+        self._Chessman__top = 9
+        self._Chessman__bottom = 0
+        self._Chessman__left = 0
+        self._Chessman__right = 8
 
     def calc_moving_list(self):
-        left = self.__chessboard.get_left_first_chessman(
-            self.__position.x, self.__position.y)
-        right = self.__chessboard.get_right_first_chessman(
-            self.__position.x, self.__position.y)
-        top = self.__chessboard.get_top_first_chessman(
-            self.__position.x, self.__position.y)
-        bottom = self.__chessboard.get_bottom_first_chessman(
-            self.__position.x, self.__position.y)
-        if left <> None:
-            if left.is_red or (not self.is_red):
-                for i in range(left.__position.x, self.__position.x, 1):
-                    self.__moving_list.insert(Point(i, self.__position.y))
-            else:
-                for i in range(left.__position.x + 1, self.__position.x, 1):
-                    self.__moving_list.insert(Point(i, self.__position.y))
-        else:
-            for i in range(0, self.__position.x, 1):
-                self.__moving_list.insert(Point(i, self.__position.y))
+        current_v_c = super(Rook, self).position.x
+        current_h_c = super(Rook, self).position.y
+        left = super(Rook, self).chessboard.get_left_first_chessman(
+            current_v_c, current_h_c)
+        right = super(Rook, self).chessboard.get_right_first_chessman(
+            current_v_c, current_h_c)
+        top = super(Rook, self).chessboard.get_top_first_chessman(
+            current_v_c, current_h_c)
+        bottom = super(Rook, self).chessboard.get_bottom_first_chessman(
+            current_v_c, current_h_c)
+
+        super(Rook, self).calc_moving_path(left, (left.position.x if left <> None else None),
+                                           current_v_c, current_h_c, 1, 0, True)
+        super(Rook, self).calc_moving_path(right, (right.position.x if right <> None else None),
+                                           current_v_c, current_h_c, -1, 8, True)
+        super(Rook, self).calc_moving_path(top, (top.position.y if top <> None else None),
+                                           current_h_c, current_v_c, -1, 9, False)
+        super(Rook, self).calc_moving_path(bottom, (bottom.position.y if bottom <> None else None),
+                                           current_h_c, current_v_c, 1, 0, False)
 
 
 class Knight(Chessman):
 
     def __init__(self, name, is_red, chessboard):
         super(Knight, self).__init__(name, is_red, chessboard)
-        self.__top = 9
-        self.__bottom = 0
-        self.__left = 0
-        self.__right = 8
+        self._Chessman__top = 9
+        self._Chessman__bottom = 0
+        self._Chessman__left = 0
+        self._Chessman__right = 8
+
+    def calc_moving_list(self):
+        current_v_c = super(Knight, self).position.x
+        current_h_c = super(Knight, self).position.y
+        probable_obstacle_points = []
+        probable_moving_points = []
+        vs1 = (current_v_c + 1, current_v_c - 1)
+        hs1 = (current_h_c,)
+        vs2 = (current_v_c,)
+        hs2 = (current_h_c + 1, current_h_c - 1)
+        creat_points(probable_obstacle_points, vs1, hs1)
+        creat_points(probable_obstacle_points, vs2, hs2)
+        current_color = super(Knight, self).is_red
+        for point in probable_obstacle_points:
+            if super(Knight, self).border_check(point.x, point.y):
+                chessman = super(Knight, self).chessboard.get_chessman(
+                    point.x, point.y)
+                if chessman is None:
+                    if point.x == current_v_c:
+                        probable_moving_points.append(
+                            Point(point.x + 1, 2 * point.y - current_h_c))
+                        probable_moving_points.append(
+                            Point(point.x - 1, 2 * point.y - current_h_c))
+                    else:
+                        probable_moving_points.append(
+                            Point(2 * point.x - current_v_c, point.y + 1))
+                        probable_moving_points.append(
+                            Point(2 * point.x - current_v_c, point.y - 1))
+
+        for point in probable_moving_points:
+            if super(Knight, self).border_check(point.x, point.y):
+                chessman = super(Knight, self).chessboard.get_chessman(
+                    point.x, point.y)
+                if chessman is None or chessman.is_red <> current_color:
+                    super(Knight, self).moving_list.append(point)
 
 
 class Cannon(Chessman):
 
     def __init__(self, name, is_red, chessboard):
         super(Cannon, self).__init__(name, is_red, chessboard)
-        self.__top = 9
-        self.__bottom = 0
-        self.__left = 0
-        self.__right = 8
+        self._Chessman__top = 9
+        self._Chessman__bottom = 0
+        self._Chessman__left = 0
+        self._Chessman__right = 8
+
+    def calc_moving_list(self):
+        current_v_c = super(Cannon, self).position.x
+        current_h_c = super(Cannon, self).position.y
+        left = super(Cannon, self).chessboard.get_left_first_chessman(
+            current_v_c, current_h_c)
+        right = super(Cannon, self).chessboard.get_right_first_chessman(
+            current_v_c, current_h_c)
+        top = super(Cannon, self).chessboard.get_top_first_chessman(
+            current_v_c, current_h_c)
+        bottom = super(Cannon, self).chessboard.get_bottom_first_chessman(
+            current_v_c, current_h_c)
+        tar_left = super(Cannon, self).chessboard.get_left_second_chessman(
+            current_v_c, current_h_c)
+        tar_right = super(Cannon, self).chessboard.get_right_second_chessman(
+            current_v_c, current_h_c)
+        tar_top = super(Cannon, self).chessboard.get_top_second_chessman(
+            current_v_c, current_h_c)
+        tar_bottom = super(Cannon, self).chessboard.get_bottom_second_chessman(
+            current_v_c, current_h_c)
+        super(Cannon, self).calc_moving_path(left, (left.position.x if left <> None else None),
+                                             current_v_c, current_h_c, 1, 0, True, True)
+        super(Cannon, self).calc_moving_path(right, (right.position.x if right <> None else None),
+                                             current_v_c, current_h_c, -1, 8, True, True)
+        super(Cannon, self).calc_moving_path(top, (top.position.y if top <> None else None),
+                                             current_h_c, current_v_c, -1, 9, False, True)
+        super(Cannon, self).calc_moving_path(bottom, (bottom.position.y if bottom <> None else None),
+                                             current_h_c, current_v_c, 1, 0, False, True)
+        current_color = super(Cannon, self).is_red
+        if tar_left <> None and tar_left.is_red <> current_color:
+            super(Cannon, self).moving_list.append(
+                Point(tar_left.position.x, tar_left.position.y))
+        if tar_right <> None and tar_right.is_red <> current_color:
+            super(Cannon, self).moving_list.append(
+                Point(tar_right.position.x, tar_right.position.y))
+        if tar_top <> None and tar_top.is_red <> current_color:
+            super(Cannon, self).moving_list.append(
+                Point(tar_top.position.x, tar_top.position.y))
+        if tar_bottom <> None and tar_bottom.is_red <> current_color:
+            super(Cannon, self).moving_list.append(
+                Point(tar_bottom.position.x, tar_bottom.position.y))
 
 
 class Mandarin(Chessman):
@@ -98,15 +212,31 @@ class Mandarin(Chessman):
     def __init__(self, name, is_red, chessboard):
         super(Mandarin, self).__init__(name, is_red, chessboard)
         if self.is_red:
-            self.__top = 2
-            self.__bottom = 0
-            self.__left = 3
-            self.__right = 5
+            self._Chessman__top = 2
+            self._Chessman__bottom = 0
+            self._Chessman__left = 3
+            self._Chessman__right = 5
         else:
-            self.__top = 9
-            self.__bottom = 7
-            self.__left = 3
-            self.__right = 5
+            self._Chessman__top = 9
+            self._Chessman__bottom = 7
+            self._Chessman__left = 3
+            self._Chessman__right = 5
+
+    def calc_moving_list(self):
+        current_v_c = super(Mandarin, self).position.x
+        current_h_c = super(Mandarin, self).position.y
+        probable_moving_points = []
+        vs1 = (current_v_c + 1, current_v_c - 1)
+        hs1 = (current_h_c + 1, current_h_c - 1)
+        creat_points(probable_moving_points, vs1, hs1)
+        current_color = super(Mandarin, self).is_red
+
+        for point in probable_moving_points:
+            if super(Mandarin, self).border_check(point.x, point.y):
+                chessman = super(Mandarin, self).chessboard.get_chessman(
+                    point.x, point.y)
+                if chessman is None or chessman.is_red <> current_color:
+                    super(Mandarin, self).moving_list.append(point)
 
 
 class Elephant(Chessman):
@@ -114,15 +244,38 @@ class Elephant(Chessman):
     def __init__(self, name, is_red, chessboard):
         super(Elephant, self).__init__(name, is_red, chessboard)
         if self.is_red:
-            self.__top = 4
-            self.__bottom = 0
-            self.__left = 0
-            self.__right = 8
+            self._Chessman__top = 4
+            self._Chessman__bottom = 0
+            self._Chessman__left = 0
+            self._Chessman__right = 8
         else:
-            self.__top = 9
-            self.__bottom = 5
-            self.__left = 0
-            self.__right = 8
+            self._Chessman__top = 9
+            self._Chessman__bottom = 5
+            self._Chessman__left = 0
+            self._Chessman__right = 8
+
+    def calc_moving_list(self):
+        current_v_c = super(Elephant, self).position.x
+        current_h_c = super(Elephant, self).position.y
+        probable_obstacle_points = []
+        probable_moving_points = []
+        vs1 = (current_v_c + 1, current_v_c - 1)
+        hs1 = (current_h_c + 1, current_h_c - 1)
+        creat_points(probable_obstacle_points, vs1, hs1)
+        current_color = super(Elephant, self).is_red
+        for point in probable_obstacle_points:
+            if super(Elephant, self).border_check(point.x, point.y):
+                chessman = super(Elephant, self).chessboard.get_chessman(
+                    point.x, point.y)
+                if chessman is None:
+                    probable_moving_points.append(
+                        Point(2 * point.x - current_v_c, 2 * point.y - current_h_c))
+        for point in probable_moving_points:
+            if super(Elephant, self).border_check(point.x, point.y):
+                chessman = super(Elephant, self).chessboard.get_chessman(
+                    point.x, point.y)
+                if chessman is None or chessman.is_red <> current_color:
+                    super(Elephant, self).moving_list.append(point)
 
 
 class Pawn(Chessman):
@@ -130,15 +283,15 @@ class Pawn(Chessman):
     def __init__(self, name, is_red, chessboard):
         super(Pawn, self).__init__(name, is_red, chessboard)
         if self.is_red:
-            self.__top = 9
-            self.__bottom = 3
-            self.__left = 0
-            self.__right = 8
+            self._Chessman__top = 9
+            self._Chessman__bottom = 3
+            self._Chessman__left = 0
+            self._Chessman__right = 8
         else:
-            self.__top = 6
-            self.__bottom = 0
-            self.__left = 0
-            self.__right = 8
+            self._Chessman__top = 6
+            self._Chessman__bottom = 0
+            self._Chessman__left = 0
+            self._Chessman__right = 8
 
 
 class King(Chessman):
@@ -146,12 +299,12 @@ class King(Chessman):
     def __init__(self, name, is_red, chessboard):
         super(King, self).__init__(name, is_red, chessboard)
         if self.is_red:
-            self.__top = 2
-            self.__bottom = 0
-            self.__left = 3
-            self.__right = 5
+            self._Chessman__top = 2
+            self._Chessman__bottom = 0
+            self._Chessman__left = 3
+            self._Chessman__right = 5
         else:
-            self.__top = 9
-            self.__bottom = 7
-            self.__left = 3
-            self.__right = 5
+            self._Chessman__top = 9
+            self._Chessman__bottom = 7
+            self._Chessman__left = 3
+            self._Chessman__right = 5
