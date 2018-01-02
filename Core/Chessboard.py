@@ -31,64 +31,64 @@ class Chessboard(object):
         red_rook_left.add_to_board(0, 0)
         red_rook_right = Chessman.Rook(" 车r红 ", "red_rook_right", True, self)
         red_rook_right.add_to_board(8, 0)
-        green_rook_left = Chessman.Rook(
-            " 车l绿 ", "green_rook_left", False, self)
-        green_rook_left.add_to_board(0, 9)
-        green_rook_right = Chessman.Rook(
-            " 车r绿 ", "green_rook_right", False, self)
-        green_rook_right.add_to_board(8, 9)
+        black_rook_left = Chessman.Rook(
+            " 车l黑 ", "black_rook_left", False, self)
+        black_rook_left.add_to_board(0, 9)
+        black_rook_right = Chessman.Rook(
+            " 车r黑 ", "black_rook_right", False, self)
+        black_rook_right.add_to_board(8, 9)
         red_knight_left = Chessman.Knight(
             " 马l红 ", "red_knight_left", True, self)
         red_knight_left.add_to_board(1, 0)
         red_knight_right = Chessman.Knight(
             " 马r红 ", "red_knight_right", True, self)
         red_knight_right.add_to_board(7, 0)
-        green_knight_left = Chessman.Knight(
-            " 马l绿 ", "green_knight_left", False, self)
-        green_knight_left.add_to_board(1, 9)
-        green_knight_right = Chessman.Knight(
-            " 马r绿 ", "green_knight_right", False, self)
-        green_knight_right.add_to_board(7, 9)
+        black_knight_left = Chessman.Knight(
+            " 马l黑 ", "black_knight_left", False, self)
+        black_knight_left.add_to_board(1, 9)
+        black_knight_right = Chessman.Knight(
+            " 马r黑 ", "black_knight_right", False, self)
+        black_knight_right.add_to_board(7, 9)
         red_cannon_left = Chessman.Cannon(
             " 炮l红 ", "red_cannon_left", True, self)
         red_cannon_left.add_to_board(1, 2)
         red_cannon_right = Chessman.Cannon(
             " 炮r红 ", "red_cannon_right", True, self)
         red_cannon_right.add_to_board(7, 2)
-        green_cannon_left = Chessman.Cannon(
-            " 炮l绿 ", "green_cannon_left", False, self)
-        green_cannon_left.add_to_board(1, 7)
-        green_cannon_right = Chessman.Cannon(
-            " 炮r绿 ", "green_cannon_right", False, self)
-        green_cannon_right.add_to_board(7, 7)
+        black_cannon_left = Chessman.Cannon(
+            " 炮l黑 ", "black_cannon_left", False, self)
+        black_cannon_left.add_to_board(1, 7)
+        black_cannon_right = Chessman.Cannon(
+            " 炮r黑 ", "black_cannon_right", False, self)
+        black_cannon_right.add_to_board(7, 7)
         red_elephant_left = Chessman.Elephant(
             " 相l红 ", "red_elephant_left", True, self)
         red_elephant_left.add_to_board(2, 0)
         red_elephant_right = Chessman.Elephant(
             " 相r红 ", "red_elephant_right", True, self)
         red_elephant_right.add_to_board(6, 0)
-        green_elephant_left = Chessman.Elephant(
-            " 象l绿 ", "green_elephant_left", False, self)
-        green_elephant_left.add_to_board(2, 9)
-        green_elephant_right = Chessman.Elephant(
-            " 象r绿 ", "green_elephant_right", False, self)
-        green_elephant_right.add_to_board(6, 9)
+        black_elephant_left = Chessman.Elephant(
+            " 象l黑 ", "black_elephant_left", False, self)
+        black_elephant_left.add_to_board(2, 9)
+        black_elephant_right = Chessman.Elephant(
+            " 象r黑 ", "black_elephant_right", False, self)
+        black_elephant_right.add_to_board(6, 9)
         red_mandarin_left = Chessman.Mandarin(
             " 仕l红 ", "red_mandarin_left", True, self)
         red_mandarin_left.add_to_board(3, 0)
         red_mandarin_right = Chessman.Mandarin(
             " 仕r红 ", "red_mandarin_right", True, self)
         red_mandarin_right.add_to_board(5, 0)
-        green_mandarin_left = Chessman.Mandarin(
-            " 仕l绿 ", "green_mandarin_left", False, self)
-        green_mandarin_left.add_to_board(3, 9)
-        green_mandarin_right = Chessman.Mandarin(
-            " 仕r绿 ", "green_mandarin_right", False, self)
-        green_mandarin_right.add_to_board(5, 9)
+        black_mandarin_left = Chessman.Mandarin(
+            " 仕l黑 ", "black_mandarin_left", False, self)
+        black_mandarin_left.add_to_board(3, 9)
+        black_mandarin_right = Chessman.Mandarin(
+            " 仕r黑 ", "black_mandarin_right", False, self)
+        black_mandarin_right.add_to_board(5, 9)
         red_king = Chessman.King(" 帅 红 ", "red_king", True, self)
         red_king.add_to_board(4, 0)
-        green_king = Chessman.King(" 将 绿 ", "green_king", False, self)
-        green_king.add_to_board(4, 9)
+        black_king = Chessman.King(" 将 黑 ", "black_king", False, self)
+        black_king.add_to_board(4, 9)
         red_pawn_1 = Chessman.Pawn(" 兵1红 ", "red_pawn_1", True, self)
         red_pawn_1.add_to_board(0, 3)
         red_pawn_2 = Chessman.Pawn(" 兵2红 ", "red_pawn_2", True, self)
@@ -99,16 +99,16 @@ class Chessboard(object):
         red_pawn_4.add_to_board(6, 3)
         red_pawn_5 = Chessman.Pawn(" 兵5红 ", "red_pawn_5", True, self)
         red_pawn_5.add_to_board(8, 3)
-        green_pawn_1 = Chessman.Pawn(" 卒1绿 ", "green_pawn_1", False, self)
-        green_pawn_1.add_to_board(0, 6)
-        green_pawn_2 = Chessman.Pawn(" 卒2绿 ", "green_pawn_2", False, self)
-        green_pawn_2.add_to_board(2, 6)
-        green_pawn_3 = Chessman.Pawn(" 卒3绿 ", "green_pawn_3", False, self)
-        green_pawn_3.add_to_board(4, 6)
-        green_pawn_4 = Chessman.Pawn(" 卒4绿 ", "green_pawn_4", False, self)
-        green_pawn_4.add_to_board(6, 6)
-        green_pawn_5 = Chessman.Pawn(" 卒5绿 ", "green_pawn_5", False, self)
-        green_pawn_5.add_to_board(8, 6)
+        black_pawn_1 = Chessman.Pawn(" 卒1黑 ", "black_pawn_1", False, self)
+        black_pawn_1.add_to_board(0, 6)
+        black_pawn_2 = Chessman.Pawn(" 卒2黑 ", "black_pawn_2", False, self)
+        black_pawn_2.add_to_board(2, 6)
+        black_pawn_3 = Chessman.Pawn(" 卒3黑 ", "black_pawn_3", False, self)
+        black_pawn_3.add_to_board(4, 6)
+        black_pawn_4 = Chessman.Pawn(" 卒4黑 ", "black_pawn_4", False, self)
+        black_pawn_4.add_to_board(6, 6)
+        black_pawn_5 = Chessman.Pawn(" 卒5黑 ", "black_pawn_5", False, self)
+        black_pawn_5.add_to_board(8, 6)
 
     def add_chessman(self, chessman, col_num, row_num):
         self.chessmans[col_num][row_num] = chessman
@@ -149,10 +149,10 @@ class Chessboard(object):
             if chessman <> None:
                 return False
             else:
-                print "green is victor"
+                print "black is victor"
                 return True
         else:
-            chessman = self.get_chessman_by_name("green_king")
+            chessman = self.get_chessman_by_name("black_king")
             if chessman <> None:
                 return False
             else:
