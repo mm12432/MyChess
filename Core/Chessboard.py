@@ -26,6 +26,10 @@ class Chessboard(object):
     def chessmans(self):
         return self.__chessmans
 
+    @property
+    def chessmans_hash(self):
+        return self.__chessmans_hash
+
     def init_board(self):
         red_rook_left = Chessman.Rook(" 车l红 ", "red_rook_left", True, self)
         red_rook_left.add_to_board(0, 0)
