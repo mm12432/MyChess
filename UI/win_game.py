@@ -130,7 +130,6 @@ def main(winstyle=0):
 
     cbd = Chessboard.Chessboard('000')
     cbd.init_board()
-    #chessman_sprites_hash = {}
 
     chessmans = pygame.sprite.Group()
     framerate = pygame.time.Clock()
@@ -146,9 +145,7 @@ def main(winstyle=0):
                 pressed_array = pygame.mouse.get_pressed()
                 for index in range(len(pressed_array)):
                     if index == 0 and pressed_array[index]:
-                        #current_chessman.is_selected = False
                         mouse_x, mouse_y = pygame.mouse.get_pos()
-                        # print mouse_x, mouse_y
                         col_num, row_num = translate_hit_area(mouse_x, mouse_y)
                         chessman_sprite = select_sprite_from_group(
                             chessmans, col_num, row_num)
@@ -165,18 +162,15 @@ def main(winstyle=0):
                                 success = current_chessman.move(
                                     col_num, row_num)
                                 if success:
-                                    cbd.print_to_cl()
                                     chessmans.remove(chessman_sprite)
                                     chessman_sprite.kill()
                                     current_chessman.is_selected = False
                                     current_chessman = None
-                                    cbd.print_to_cl()
                         elif current_chessman <> None and chessman_sprite is None:
                             success = current_chessman.move(col_num, row_num)
                             if success:
                                 current_chessman.is_selected = False
                                 current_chessman = None
-                                cbd.print_to_cl()
         framerate.tick(20)
         # clear/erase the last drawn sprites
         chessmans.clear(screen, background)
