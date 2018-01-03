@@ -44,13 +44,17 @@ class Chessman_Sprite(pygame.sprite.Sprite):
                          (9 - chessman.row_num) * 80,  80,  80)
 
     def move(self, col_num, row_num):
+        old_col_num = self.chessman.col_num
+        old_row_num = self.chessman.row_num
         is_correct_position = self.chessman.move(col_num, row_num)
         if is_correct_position:
-            self.rect.move_ip((col_num - self.chessman.col_num)
-                              * 80, (self.chessman.col_num - col_num) * 80)
+            self.rect.move_ip((col_num - old_col_num)
+                              * 80, (old_row_num - row_num) * 80)
             self.rect = self.rect.clamp(SCREENRECT)
             self.chessman.chessboard.clear_chessmans_moving_list()
             self.chessman.chessboard.calc_chessmans_moving_list()
+            return True
+        return False
 
     def update(self):
         if self.is_selected:
@@ -59,31 +63,12 @@ class Chessman_Sprite(pygame.sprite.Sprite):
             else:
                 self.image = self.images[0]
             self.is_transparent = not self.is_transparent
+        else:
+            self.image = self.images[0]
 
 
-def main(winstyle=0):
-
-    pygame.init()
-    bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
-    screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
-    pygame.display.set_caption("中国象棋最强AI")
-
-    # create the background, tile the bgd image
-    bgdtile = load_image('boardchess.gif')
-    background = pygame.Surface(SCREENRECT.size)
-    for x in range(0, SCREENRECT.width, bgdtile.get_width()):
-        background.blit(bgdtile, (x, 0))
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
-
-    cbd = Chessboard.Chessboard('000')
-    cbd.init_board()
-    #chessman_sprites_hash = {}
-
-    chessmans = pygame.sprite.Group()
-    framerate = pygame.time.Clock()
-
-    for chessman in cbd.chessmans_hash.values():
+def creat_sprite_group(sprite_group, chessmans_hash):
+    for chessman in chessmans_hash.values():
         if chessman.is_red:
             if isinstance(chessman, Chessman.Rook):
                 images = load_images("red_rook.gif", "transparent.gif")
@@ -115,14 +100,84 @@ def main(winstyle=0):
             else:
                 images = load_images("black_pawn.gif", "transparent.gif")
         chessman_sprite = Chessman_Sprite(images, chessman)
-        chessmans.add(chessman_sprite)
+        sprite_group.add(chessman_sprite)
 
-    while True:
+
+def select_sprite_from_group(sprite_group, col_num, row_num):
+    for sprite in sprite_group:
+        if sprite.chessman.col_num == col_num and sprite.chessman.row_num == row_num:
+            return sprite
+
+
+def translate_hit_area(screen_x, screen_y):
+    return screen_x // 80, 9 - screen_y // 80
+
+
+def main(winstyle=0):
+
+    pygame.init()
+    bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
+    screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
+    pygame.display.set_caption("中国象棋最强AI")
+
+    # create the background, tile the bgd image
+    bgdtile = load_image('boardchess.gif')
+    background = pygame.Surface(SCREENRECT.size)
+    for x in range(0, SCREENRECT.width, bgdtile.get_width()):
+        background.blit(bgdtile, (x, 0))
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+
+    cbd = Chessboard.Chessboard('000')
+    cbd.init_board()
+    #chessman_sprites_hash = {}
+
+    chessmans = pygame.sprite.Group()
+    framerate = pygame.time.Clock()
+
+    creat_sprite_group(chessmans, cbd.chessmans_hash)
+    current_chessman = None
+    cbd.calc_chessmans_moving_list()
+    while not cbd.is_end():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-
-        framerate.tick(5)
+            elif event.type == MOUSEBUTTONDOWN:
+                pressed_array = pygame.mouse.get_pressed()
+                for index in range(len(pressed_array)):
+                    if index == 0 and pressed_array[index]:
+                        #current_chessman.is_selected = False
+                        mouse_x, mouse_y = pygame.mouse.get_pos()
+                        # print mouse_x, mouse_y
+                        col_num, row_num = translate_hit_area(mouse_x, mouse_y)
+                        chessman_sprite = select_sprite_from_group(
+                            chessmans, col_num, row_num)
+                        if current_chessman is None and chessman_sprite <> None:
+                            if chessman_sprite.chessman.is_red == cbd.is_red_turn:
+                                current_chessman = chessman_sprite
+                                chessman_sprite.is_selected = True
+                        elif current_chessman <> None and chessman_sprite <> None:
+                            if chessman_sprite.chessman.is_red == cbd.is_red_turn:
+                                current_chessman.is_selected = False
+                                current_chessman = chessman_sprite
+                                chessman_sprite.is_selected = True
+                            else:
+                                success = current_chessman.move(
+                                    col_num, row_num)
+                                if success:
+                                    cbd.print_to_cl()
+                                    chessmans.remove(chessman_sprite)
+                                    chessman_sprite.kill()
+                                    current_chessman.is_selected = False
+                                    current_chessman = None
+                                    cbd.print_to_cl()
+                        elif current_chessman <> None and chessman_sprite is None:
+                            success = current_chessman.move(col_num, row_num)
+                            if success:
+                                current_chessman.is_selected = False
+                                current_chessman = None
+                                cbd.print_to_cl()
+        framerate.tick(20)
         # clear/erase the last drawn sprites
         chessmans.clear(screen, background)
 
@@ -130,6 +185,6 @@ def main(winstyle=0):
         chessmans.update()
         chessmans.draw(screen)
         pygame.display.update()
-        
+
 if __name__ == '__main__':
     main()
