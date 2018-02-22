@@ -9,6 +9,8 @@ class Chessboard(object):
         self.__is_red_turn = True
         self.__chessmans = [([None] * 10) for i in range(9)]
         self.__chessmans_hash = {}
+        self.__history = {"red": {"chessman": None, "last_pos": None, "repeat": 0},
+                          "black": {"chessman": None, "last_pos": None, "repeat": 0}}
 
     @property
     def is_red_turn(self):
@@ -147,21 +149,40 @@ class Chessboard(object):
             print("the wrong turn")
             return False
 
-    def is_end(self):
-        if self.__is_red_turn:
-            chessman = self.get_chessman_by_name("red_king")
-            if chessman != None:
-                return False
-            else:
-                print("black is victor")
-                return True
+    def update_history(self, chessman, col_num, row_num):
+        red_or_black = self.red_or_black(chessman)
+        history_chessman = self.__history[red_or_black]["chessman"]
+        history_pos = self.__history[red_or_black]["last_pos"]
+        if history_chessman == chessman and history_pos != None and history_pos[0] == col_num and history_pos[1] == row_num:
+            self.__history[red_or_black]["repeat"] += 1
         else:
-            chessman = self.get_chessman_by_name("black_king")
-            if chessman != None:
-                return False
-            else:
-                print("red is victor")
+            self.__history[red_or_black]["repeat"] = 0
+        self.__history[red_or_black]["chessman"] = chessman
+        self.__history[red_or_black]["last_pos"] = (
+            chessman.col_num, chessman.row_num)
+
+    def red_or_black(self, chessman):
+        if chessman.is_red:
+            return "red"
+        else:
+            return "black"
+
+    def is_end(self):
+        return self.who_is_victor(6)
+
+    def who_is_victor(self, repeat_num):
+        whos_turn = "red" if self.__is_red_turn else "black"
+        other_turn = "red" if not self.__is_red_turn else "black"
+        chessman = self.get_chessman_by_name("{0}_king".format(whos_turn))
+        if chessman != None:
+            if self.__history[other_turn]["repeat"] == repeat_num:
+                print("{0} is victor".format(whos_turn))
                 return True
+            else:
+                return False
+        else:
+            print("{0} is victor".format(other_turn))
+            return True
 
     def get_chessman(self, col_num, row_num):
         return self.__chessmans[col_num][row_num]

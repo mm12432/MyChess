@@ -3,7 +3,6 @@
 from MyChess.Chess_Core import Point
 
 
-
 def num_between(max_num, min_num, current):
     return current >= min_num and current <= max_num
 
@@ -82,7 +81,9 @@ class Chessman(object):
 
     def move(self, col_num, row_num):
         if self.in_moving_list(col_num, row_num):
-            self.__chessboard.remove_chessman_source(self.__position.x, self.__position.y)
+            self.__chessboard.remove_chessman_source(
+                self.__position.x, self.__position.y)
+            self.__chessboard.update_history(self, col_num, row_num)
             self.__position.x = col_num
             self.__position.y = row_num
             return self.__chessboard.move_chessman(self, col_num, row_num)
