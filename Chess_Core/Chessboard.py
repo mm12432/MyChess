@@ -1,5 +1,5 @@
 # coding:utf-8
-import Chessman
+from MyChess.Chess_Core import Chessman
 
 
 class Chessboard(object):
@@ -121,7 +121,7 @@ class Chessboard(object):
 
     def remove_chessman_target(self, col_num, row_num):
         chessman_old = self.get_chessman(col_num, row_num)
-        if chessman_old <> None:
+        if chessman_old != None:
             self.__chessmans_hash.pop(chessman_old.name)
 
     def remove_chessman_source(self, col_num, row_num):
@@ -144,23 +144,23 @@ class Chessboard(object):
             self.__is_red_turn = not self.__is_red_turn
             return True
         else:
-            print "the wrong turn"
+            print("the wrong turn")
             return False
 
     def is_end(self):
         if self.__is_red_turn:
             chessman = self.get_chessman_by_name("red_king")
-            if chessman <> None:
+            if chessman != None:
                 return False
             else:
-                print "black is victor"
+                print("black is victor")
                 return True
         else:
             chessman = self.get_chessman_by_name("black_king")
-            if chessman <> None:
+            if chessman != None:
                 return False
             else:
-                print "red is victor"
+                print("red is victor")
                 return True
 
     def get_chessman(self, col_num, row_num):
@@ -173,32 +173,32 @@ class Chessboard(object):
     def get_top_first_chessman(self, col_num, row_num):
         for i in range(row_num + 1, 10, 1):
             current = self.chessmans[col_num][i]
-            if current <> None:
+            if current != None:
                 return current
 
     def get_bottom_first_chessman(self, col_num, row_num):
         for i in range(row_num - 1, -1, -1):
             current = self.chessmans[col_num][i]
-            if current <> None:
+            if current != None:
                 return current
 
     def get_left_first_chessman(self, col_num, row_num):
         for i in range(col_num - 1, -1, -1):
             current = self.chessmans[i][row_num]
-            if current <> None:
+            if current != None:
                 return current
 
     def get_right_first_chessman(self, col_num, row_num):
         for i in range(col_num + 1, 9, 1):
             current = self.chessmans[i][row_num]
-            if current <> None:
+            if current != None:
                 return current
 
     def get_top_second_chessman(self, col_num, row_num):
         count = 0
         for i in range(row_num + 1, 10, 1):
             current = self.chessmans[col_num][i]
-            if current <> None:
+            if current != None:
                 if count == 1:
                     return current
                 else:
@@ -208,7 +208,7 @@ class Chessboard(object):
         count = 0
         for i in range(row_num - 1, -1, -1):
             current = self.chessmans[col_num][i]
-            if current <> None:
+            if current != None:
                 if count == 1:
                     return current
                 else:
@@ -218,7 +218,7 @@ class Chessboard(object):
         count = 0
         for i in range(col_num - 1, -1, -1):
             current = self.chessmans[i][row_num]
-            if current <> None:
+            if current != None:
                 if count == 1:
                     return current
                 else:
@@ -228,7 +228,7 @@ class Chessboard(object):
         count = 0
         for i in range(col_num + 1, 9, 1):
             current = self.chessmans[i][row_num]
-            if current <> None:
+            if current != None:
                 if count == 1:
                     return current
                 else:
@@ -238,9 +238,9 @@ class Chessboard(object):
         screen = "\r\n"
         for i in range(9, -1, -1):
             for j in range(9):
-                if self.__chessmans[j][i] <> None:
+                if self.__chessmans[j][i] != None:
                     screen += self.__chessmans[j][i].name_cn
                 else:
                     screen += "   .   "
             screen += "\r\n" * 3
-        print(screen.decode("utf-8"))
+        print(screen)

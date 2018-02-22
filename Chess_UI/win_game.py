@@ -3,9 +3,9 @@ import sys
 import pygame
 import random
 import os.path
-from Core import Chessboard
-from Core import Point
-from Core import Chessman
+from MyChess.Chess_Core import Chessboard
+from MyChess.Chess_Core import Point
+from MyChess.Chess_Core import Chessman
 from pygame.locals import *
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
@@ -149,11 +149,11 @@ def main(winstyle=0):
                         col_num, row_num = translate_hit_area(mouse_x, mouse_y)
                         chessman_sprite = select_sprite_from_group(
                             chessmans, col_num, row_num)
-                        if current_chessman is None and chessman_sprite <> None:
+                        if current_chessman is None and chessman_sprite != None:
                             if chessman_sprite.chessman.is_red == cbd.is_red_turn:
                                 current_chessman = chessman_sprite
                                 chessman_sprite.is_selected = True
-                        elif current_chessman <> None and chessman_sprite <> None:
+                        elif current_chessman != None and chessman_sprite != None:
                             if chessman_sprite.chessman.is_red == cbd.is_red_turn:
                                 current_chessman.is_selected = False
                                 current_chessman = chessman_sprite
@@ -166,7 +166,7 @@ def main(winstyle=0):
                                     chessman_sprite.kill()
                                     current_chessman.is_selected = False
                                     current_chessman = None
-                        elif current_chessman <> None and chessman_sprite is None:
+                        elif current_chessman != None and chessman_sprite is None:
                             success = current_chessman.move(col_num, row_num)
                             if success:
                                 current_chessman.is_selected = False
@@ -179,6 +179,7 @@ def main(winstyle=0):
         chessmans.update()
         chessmans.draw(screen)
         pygame.display.update()
+
 
 if __name__ == '__main__':
     main()
