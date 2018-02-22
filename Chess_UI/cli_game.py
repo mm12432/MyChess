@@ -2,6 +2,7 @@
 from MyChess.Chess_Core import Chessboard
 from MyChess.Chess_Core import Chessman
 
+
 def print_chessman_name(chessman):
     if chessman:
         print(chessman.name)
@@ -13,8 +14,6 @@ def main():
     cbd = Chessboard.Chessboard('000')
     cbd.init_board()
     cbd.print_to_cl()
-    # cbd.remove_chessman_source(0,0)
-    # cbd.print_to_cl()
     while not cbd.is_end():
         cbd.calc_chessmans_moving_list()
         if cbd.is_red_turn:
@@ -47,4 +46,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
