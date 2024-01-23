@@ -21,7 +21,14 @@ def load_image(file):
         raise SystemExit('Could not load image "%s" %s' %
                          (file, pygame.get_error()))
     return surface.convert()
-
+def load_sound(file):
+    file = os.path.join(main_dir, 'sounds', file)
+    try:
+        sound = pygame.mixer.Sound(file)
+    except pygame.error:
+        raise SystemExit('Could not load sound "%s" %s' %
+                         (file, pygame.get_error()))
+    return sound
 
 def load_images(*files):
     imgs = []
@@ -34,14 +41,15 @@ class Chessman_Sprite(pygame.sprite.Sprite):
     is_selected = False
     images = []
     is_transparent = False
-
-    def __init__(self, images, chessman):
+    def __init__(self, images, Kill_sound, chessman):
         pygame.sprite.Sprite.__init__(self)
         self.chessman = chessman
         self.images = images
         self.image = self.images[0]
         self.rect = Rect(chessman.col_num * 80,
                          (9 - chessman.row_num) * 80,  80,  80)
+        self.move_sound = load_sound("move.mp3")
+        self.Kill_sound = Kill_sound
 
     def move(self, col_num, row_num):
         old_col_num = self.chessman.col_num
@@ -54,6 +62,7 @@ class Chessman_Sprite(pygame.sprite.Sprite):
             self.chessman.chessboard.clear_chessmans_moving_list()
             self.chessman.chessboard.calc_chessmans_moving_list()
             return True
+        load_sound("lowtime.mp3").play()
         return False
 
     def update(self):
@@ -99,7 +108,11 @@ def creat_sprite_group(sprite_group, chessmans_hash):
                 images = load_images("black_mandarin.gif", "transparent.gif")
             else:
                 images = load_images("black_pawn.gif", "transparent.gif")
-        chessman_sprite = Chessman_Sprite(images, chessman)
+        if isinstance(chessman,Chessman.Cannon):
+            Kill_sound = load_sound("explosion.mp3")
+        else:
+            Kill_sound = load_sound("berserk.mp3")
+        chessman_sprite = Chessman_Sprite(images, Kill_sound, chessman)
         sprite_group.add(chessman_sprite)
 
 
@@ -114,7 +127,8 @@ def translate_hit_area(screen_x, screen_y):
 
 
 def main(winstyle=0):
-
+    # set up mixer function for sounds
+    pygame.mixer.init()
     pygame.init()
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
@@ -134,6 +148,8 @@ def main(winstyle=0):
     chessmans = pygame.sprite.Group()
     framerate = pygame.time.Clock()
 
+    load_sound("dong.mp3").play()
+    
     creat_sprite_group(chessmans, cbd.chessmans_hash)
     current_chessman = None
     cbd.calc_chessmans_moving_list()
@@ -162,6 +178,7 @@ def main(winstyle=0):
                                 success = current_chessman.move(
                                     col_num, row_num)
                                 if success:
+                                    current_chessman.Kill_sound.play()
                                     chessmans.remove(chessman_sprite)
                                     chessman_sprite.kill()
                                     current_chessman.is_selected = False
@@ -170,7 +187,9 @@ def main(winstyle=0):
                             success = current_chessman.move(col_num, row_num)
                             if success:
                                 current_chessman.is_selected = False
+                                current_chessman.move_sound.play()
                                 current_chessman = None
+                                
         framerate.tick(20)
         # clear/erase the last drawn sprites
         chessmans.clear(screen, background)
